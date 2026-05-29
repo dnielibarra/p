@@ -59,16 +59,16 @@ function startEmulator(gameUrl){
   window.EJS_core = "snes";
   window.EJS_gameUrl = gameUrl;
 
-  /* Ruta local en tu GitHub */
-  window.EJS_pathtodata = "emulatorjs/data/";
+  /*
+    Esta ruta debe apuntar a la CARPETA data/
+    No al archivo loader.js
+  */
+  window.EJS_pathtodata =
+  "https://dnielibarra.github.io/p/emulador/emulatorjs/data/";
 
   window.EJS_startOnLoaded = true;
   window.EJS_volume = 0.6;
   window.EJS_language = "es";
-
-  /* Ajustes para intentar reducir lag */
-  window.EJS_threads = false;
-  window.EJS_disableDatabases = true;
 
   const oldLoader = document.getElementById("ejs-loader");
 
@@ -77,10 +77,14 @@ function startEmulator(gameUrl){
   }
 
   const script = document.createElement("script");
+
   script.id = "ejs-loader";
 
-  /* Loader local */
-  script.src = "emulatorjs/data/loader.js";
+  /*
+    Esta ruta sí apunta directamente al archivo loader.js
+  */
+  script.src =
+  "https://dnielibarra.github.io/p/emulador/emulatorjs/data/loader.js";
 
   document.body.appendChild(script);
 }
