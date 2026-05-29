@@ -1,106 +1,116 @@
-const canvas =
-document.getElementById("screen");
+const romInput = document.getElementById("romInput");
+const romName = document.getElementById("romName");
+const introText = document.getElementById("introText");
 
-const ctx =
-canvas.getContext("2d");
+setTimeout(() => introText.textContent = "LOADING CORE...", 900);
+setTimeout(() => introText.textContent = "READY", 1800);
 
-/* PANTALLA INICIAL */
+setTimeout(() => {
+  const intro = document.getElementById("intro");
+  intro.style.opacity = "0";
 
-ctx.fillStyle="black";
+  setTimeout(() => {
+    intro.remove();
+  }, 1000);
 
-ctx.fillRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
+}, 2600);
 
-ctx.fillStyle="white";
+document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen();
+  } else {
+    await document.exitFullscreen();
+  }
+});
 
-ctx.font="20px Arial";
+romInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
 
-ctx.fillText(
-"EMULADOR LISTO",
-40,
-110
-);
+  if (!file) return;
 
-/* PRESENTACION */
+  romName.textContent = file.name;
 
-window.addEventListener(
-"load",
-()=>{
+  const gameUrl = URL.createObjectURL(file);
 
-    setTimeout(()=>{
+  startEmulator(gameUrl);
+});
 
-        const splash =
-        document.getElementById(
-        "splash"
-        );
+function startEmulator(gameUrl){
 
-        splash.style.opacity="0";
+  document.getElementById("game").innerHTML = "";
 
-        setTimeout(()=>{
+  window.EJS_player = "#game";
+  window.EJS_core = "snes";
+  window.EJS_gameUrl = gameUrl;
+  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+  window.EJS_startOnLoaded = true;
+  window.EJS_volume = 0.7;
+  window.EJS_language = "es";
 
-            splash.remove();
+  const oldLoader = document.getElementById("ejs-loader");
 
-        },1000);
+  if(oldLoader){
+    oldLoader.remove();
+  }
 
-    },2500);
+  const script = document.createElement("script");
+  script.id = "ejs-loader";
+  script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+
+  document.body.appendChild(script);
+}
+
+/* Botones táctiles simulando teclado */
+
+document.querySelectorAll("[data-key]").forEach(button => {
+
+  const keyCode = button.dataset.key;
+
+  button.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    pressKey(keyCode);
+    vibrate();
+  });
+
+  button.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    releaseKey(keyCode);
+  });
+
+  button.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    pressKey(keyCode);
+  });
+
+  button.addEventListener("mouseup", (e) => {
+    e.preventDefault();
+    releaseKey(keyCode);
+  });
+
+  button.addEventListener("mouseleave", () => {
+    releaseKey(keyCode);
+  });
 
 });
 
-/* FULLSCREEN */
+function pressKey(code){
+  document.dispatchEvent(new KeyboardEvent("keydown", {
+    code: code,
+    key: code,
+    bubbles: true
+  }));
+}
 
-document
-.getElementById("fullscreenBtn")
-.addEventListener(
-"click",
-()=>{
+function releaseKey(code){
+  document.dispatchEvent(new KeyboardEvent("keyup", {
+    code: code,
+    key: code,
+    bubbles: true
+  }));
+}
 
-    document.documentElement
-    .requestFullscreen();
-
-});
-
-/* CARGA ROM */
-
-const romInput =
-document.getElementById("romInput");
-
-romInput.addEventListener(
-"change",
-(e)=>{
-
-    const file =
-    e.target.files[0];
-
-    if(!file) return;
-
-    romInput.style.display =
-    "none";
-
-    ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-    );
-
-    ctx.fillStyle="white";
-
-    ctx.font="16px Arial";
-
-    ctx.fillText(
-    "ROM CARGADA:",
-    10,
-    40
-    );
-
-    ctx.fillText(
-    file.name,
-    10,
-    70
-    );
-
-});
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate(18);
+  }
+}
