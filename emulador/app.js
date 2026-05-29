@@ -5,6 +5,13 @@ const romName = document.getElementById("romName");
 const romMenu = document.getElementById("romMenu");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 
+let fullscreenMoved = false;
+let draggingFullscreen = false;
+let offsetX = 0;
+let offsetY = 0;
+
+/* INTRO */
+
 setTimeout(() => {
   introText.textContent = "LOADING CORE...";
 }, 900);
@@ -22,7 +29,9 @@ setTimeout(() => {
 
 }, 2600);
 
-fullscreenBtn.addEventListener("click", async () => {
+/* FULLSCREEN */
+
+async function toggleFullscreen(){
   try{
     if(!document.fullscreenElement){
       await document.documentElement.requestFullscreen();
@@ -34,7 +43,93 @@ fullscreenBtn.addEventListener("click", async () => {
   }catch(error){
     alert("No se pudo activar pantalla completa");
   }
+}
+
+fullscreenBtn.addEventListener("click", () => {
+  if(fullscreenMoved){
+    fullscreenMoved = false;
+    return;
+  }
+
+  toggleFullscreen();
 });
+
+/* BOTON FULLSCREEN MOVIBLE CON DEDO */
+
+fullscreenBtn.addEventListener("touchstart", function(e){
+  const touch = e.touches[0];
+  const rect = fullscreenBtn.getBoundingClientRect();
+
+  offsetX = touch.clientX - rect.left;
+  offsetY = touch.clientY - rect.top;
+
+  draggingFullscreen = false;
+}, {passive:false});
+
+fullscreenBtn.addEventListener("touchmove", function(e){
+  e.preventDefault();
+
+  const touch = e.touches[0];
+
+  let newLeft = touch.clientX - offsetX;
+  let newTop = touch.clientY - offsetY;
+
+  const maxLeft = window.innerWidth - fullscreenBtn.offsetWidth;
+  const maxTop = window.innerHeight - fullscreenBtn.offsetHeight;
+
+  newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+  newTop = Math.max(0, Math.min(newTop, maxTop));
+
+  fullscreenBtn.style.left = newLeft + "px";
+  fullscreenBtn.style.top = newTop + "px";
+  fullscreenBtn.style.right = "auto";
+
+  draggingFullscreen = true;
+  fullscreenMoved = true;
+}, {passive:false});
+
+fullscreenBtn.addEventListener("touchend", function(e){
+  if(draggingFullscreen){
+    e.preventDefault();
+  }
+}, {passive:false});
+
+/* SOPORTE MOUSE PARA PC */
+
+fullscreenBtn.addEventListener("mousedown", function(e){
+  offsetX = e.clientX - fullscreenBtn.getBoundingClientRect().left;
+  offsetY = e.clientY - fullscreenBtn.getBoundingClientRect().top;
+
+  draggingFullscreen = false;
+
+  function move(ev){
+    let newLeft = ev.clientX - offsetX;
+    let newTop = ev.clientY - offsetY;
+
+    const maxLeft = window.innerWidth - fullscreenBtn.offsetWidth;
+    const maxTop = window.innerHeight - fullscreenBtn.offsetHeight;
+
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(0, Math.min(newTop, maxTop));
+
+    fullscreenBtn.style.left = newLeft + "px";
+    fullscreenBtn.style.top = newTop + "px";
+    fullscreenBtn.style.right = "auto";
+
+    draggingFullscreen = true;
+    fullscreenMoved = true;
+  }
+
+  function up(){
+    document.removeEventListener("mousemove", move);
+    document.removeEventListener("mouseup", up);
+  }
+
+  document.addEventListener("mousemove", move);
+  document.addEventListener("mouseup", up);
+});
+
+/* CARGAR ROM */
 
 romInput.addEventListener("change", function(e){
 
@@ -51,6 +146,8 @@ romInput.addEventListener("change", function(e){
   startEmulator(gameUrl);
 });
 
+/* EMULATORJS */
+
 function startEmulator(gameUrl){
 
   document.getElementById("game").innerHTML = "";
@@ -60,15 +157,23 @@ function startEmulator(gameUrl){
   window.EJS_gameUrl = gameUrl;
 
   /*
-    Esta ruta debe apuntar a la CARPETA data/
-    No al archivo loader.js
+    Esta ruta apunta a la carpeta data/
+    Debe terminar con /
   */
   window.EJS_pathtodata =
   "https://dnielibarra.github.io/p/emulador/emulatorjs/data/";
 
   window.EJS_startOnLoaded = true;
-  window.EJS_volume = 0.6;
   window.EJS_language = "es";
+
+  /*
+    Ajustes para intentar reducir lag
+  */
+  window.EJS_volume = 0.4;
+  window.EJS_threads = false;
+  window.EJS_disableDatabases = true;
+  window.EJS_gamePatchUrl = "";
+  window.EJS_biosUrl = "";
 
   const oldLoader = document.getElementById("ejs-loader");
 
@@ -77,11 +182,10 @@ function startEmulator(gameUrl){
   }
 
   const script = document.createElement("script");
-
   script.id = "ejs-loader";
 
   /*
-    Esta ruta sí apunta directamente al archivo loader.js
+    Esta ruta apunta al archivo loader.js
   */
   script.src =
   "https://dnielibarra.github.io/p/emulador/emulatorjs/data/loader.js";
