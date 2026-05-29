@@ -3,9 +3,15 @@ const intro = document.getElementById("intro");
 const romInput = document.getElementById("romInput");
 const romName = document.getElementById("romName");
 const romMenu = document.getElementById("romMenu");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
 
-setTimeout(() => introText.textContent = "LOADING CORE...", 900);
-setTimeout(() => introText.textContent = "READY", 1800);
+setTimeout(() => {
+  introText.textContent = "LOADING CORE...";
+}, 900);
+
+setTimeout(() => {
+  introText.textContent = "READY";
+}, 1800);
 
 setTimeout(() => {
   intro.style.opacity = "0";
@@ -15,6 +21,20 @@ setTimeout(() => {
   }, 1000);
 
 }, 2600);
+
+fullscreenBtn.addEventListener("click", async () => {
+  try{
+    if(!document.fullscreenElement){
+      await document.documentElement.requestFullscreen();
+      fullscreenBtn.textContent = "×";
+    }else{
+      await document.exitFullscreen();
+      fullscreenBtn.textContent = "⛶";
+    }
+  }catch(error){
+    alert("No se pudo activar pantalla completa");
+  }
+});
 
 romInput.addEventListener("change", function(e){
 
@@ -38,10 +58,17 @@ function startEmulator(gameUrl){
   window.EJS_player = "#game";
   window.EJS_core = "snes";
   window.EJS_gameUrl = gameUrl;
-  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+
+  /* Ruta local en tu GitHub */
+  window.EJS_pathtodata = "emulatorjs/data/";
+
   window.EJS_startOnLoaded = true;
-  window.EJS_volume = 0.8;
+  window.EJS_volume = 0.6;
   window.EJS_language = "es";
+
+  /* Ajustes para intentar reducir lag */
+  window.EJS_threads = false;
+  window.EJS_disableDatabases = true;
 
   const oldLoader = document.getElementById("ejs-loader");
 
@@ -51,7 +78,9 @@ function startEmulator(gameUrl){
 
   const script = document.createElement("script");
   script.id = "ejs-loader";
-  script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+
+  /* Loader local */
+  script.src = "emulatorjs/data/loader.js";
 
   document.body.appendChild(script);
 }
