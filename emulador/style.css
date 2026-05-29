@@ -6,13 +6,11 @@
 
 html,body{
   width:100%;
-  min-height:100%;
+  height:100%;
   background:#000;
   color:white;
   font-family:Arial,sans-serif;
-  overflow-x:hidden;
-  touch-action:none;
-  overscroll-behavior:none;
+  overflow:hidden;
 }
 
 #intro{
@@ -32,14 +30,13 @@ html,body{
 }
 
 .intro-box h1{
-  font-size:clamp(2rem,8vw,5rem);
+  font-size:clamp(2.2rem,9vw,5rem);
   letter-spacing:4px;
 }
 
 .intro-box p{
   margin-top:15px;
   color:#aaa;
-  font-size:1rem;
 }
 
 @keyframes pulse{
@@ -47,45 +44,23 @@ html,body{
   50%{transform:scale(1.07);}
 }
 
-#fullscreenBtn{
+#romMenu{
   position:fixed;
-  top:20px;
-  right:20px;
-  z-index:1000;
-  width:48px;
-  height:48px;
-  font-size:24px;
-  border:none;
-  border-radius:6px;
-}
-
-#app{
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  background:#000;
+  z-index:10;
+  text-align:center;
   padding:20px;
 }
 
-#screenFrame{
-  width:min(92vw,900px);
-  aspect-ratio:8 / 7;
-  margin:70px auto 15px;
-  border:5px solid #444;
-  border-radius:22px;
-  overflow:hidden;
-  background:#000;
-}
-
-#game{
-  width:100%;
-  height:100%;
-  background:#000;
-}
-
-#romBar{
-  width:min(92vw,900px);
-  margin:0 auto 20px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:15px;
+#romMenu h2{
+  font-size:clamp(2rem,8vw,4rem);
+  letter-spacing:3px;
 }
 
 #romInput{
@@ -95,153 +70,26 @@ html,body{
 .fileBtn{
   background:white;
   color:black;
-  padding:8px 12px;
-  border-radius:4px;
-  white-space:nowrap;
+  padding:14px 22px;
+  border-radius:8px;
+  font-size:20px;
 }
 
 #romName{
+  color:#ccc;
+  max-width:90vw;
   overflow:hidden;
-  white-space:nowrap;
   text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
-#controls{
+#emulatorBox{
+  width:100vw;
+  height:100vh;
+  background:#000;
+}
+
+#game{
   width:100%;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  gap:15px;
-}
-
-#dpad{
-  display:grid;
-  grid-template-columns:58px 58px 58px;
-  grid-template-rows:58px 58px 58px;
-  gap:4px;
-}
-
-#dpad button,
-#actionButtons button{
-  border:none;
-  border-radius:50%;
-  font-size:24px;
-  background:#e8e8e8;
-  color:#000;
-}
-
-#dpad button:nth-child(1){
-  grid-column:2;
-  grid-row:1;
-}
-
-#dpad button:nth-child(2){
-  grid-column:1;
-  grid-row:2;
-}
-
-.dcenter{
-  grid-column:2;
-  grid-row:2;
-  background:#555;
-  border-radius:12px;
-}
-
-#dpad button:nth-child(4){
-  grid-column:3;
-  grid-row:2;
-}
-
-#dpad button:nth-child(5){
-  grid-column:2;
-  grid-row:3;
-}
-
-#actionButtons{
-  display:grid;
-  grid-template-columns:64px 64px;
-  grid-template-rows:64px 64px;
-  gap:10px;
-}
-
-#startSelect{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  display:flex;
-  gap:12px;
-}
-
-#startSelect button{
-  padding:8px 14px;
-  border:none;
-  border-radius:20px;
-  background:#ddd;
-  color:#000;
-  font-size:12px;
-}
-
-button{
-  touch-action:none;
-  user-select:none;
-}
-
-@media (orientation:landscape){
-
-  body{
-    overflow:hidden;
-  }
-
-  #app{
-    padding:0;
-  }
-
-  #screenFrame{
-    width:58vw;
-    height:72vh;
-    margin:8vh auto 0;
-  }
-
-  #romBar{
-    position:fixed;
-    left:50%;
-    bottom:8px;
-    transform:translateX(-50%);
-    opacity:.35;
-    font-size:12px;
-  }
-
-  #controls{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-  }
-
-  #dpad,
-  #actionButtons,
-  #startSelect{
-    pointer-events:auto;
-    opacity:.42;
-  }
-
-  #dpad{
-    position:fixed;
-    left:20px;
-    bottom:25px;
-    grid-template-columns:54px 54px 54px;
-    grid-template-rows:54px 54px 54px;
-  }
-
-  #actionButtons{
-    position:fixed;
-    right:22px;
-    bottom:35px;
-    grid-template-columns:58px 58px;
-    grid-template-rows:58px 58px;
-  }
-
-  #startSelect{
-    bottom:12px;
-  }
+  height:100%;
 }
