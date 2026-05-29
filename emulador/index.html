@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>IBARRA 8-BIT</title>
 
-<link rel="stylesheet"
-href="style.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
+<!-- PRESENTACION -->
+
+<div id="splash">
+
+    <div id="logo">
+
+        <h1>IBARRA 8-BIT</h1>
+
+        <p>PRESENTA</p>
+
+    </div>
+
+</div>
+
+<!-- EMULADOR -->
+
 <div id="console">
 
     <div id="header">
-
-        <h1>🎮 IBARRA 8-BIT</h1>
 
         <button id="fullscreenBtn">
             ⛶
@@ -32,37 +47,35 @@ href="style.css">
             height="224">
     </canvas>
 
-    <input
-      type="file"
-      id="romInput"
-      accept=".smc,.sfc">
+    <input type="file"
+           id="romInput"
+           accept=".smc,.sfc">
 
 </div>
 
-<div id="controls">
+<div id="gameArea">
 
     <div id="dpad">
 
         <button id="up">▲</button>
 
-        <div>
+        <button id="left">◀</button>
 
-            <button id="left">◀</button>
+        <div id="center"></div>
 
-            <button id="down">▼</button>
+        <button id="right">▶</button>
 
-            <button id="right">▶</button>
-
-        </div>
+        <button id="down">▼</button>
 
     </div>
 
     <div id="actionButtons">
 
-        <button>A</button>
-        <button>B</button>
         <button>X</button>
+        <button>A</button>
+
         <button>Y</button>
+        <button>B</button>
 
     </div>
 
