@@ -1,12 +1,106 @@
-body{
-    background:#111;
-    color:white;
-    text-align:center;
-    font-family:Arial;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-canvas{
-    border:4px solid white;
-    width:768px;
+body{
+
+    background:#111;
+
+    color:white;
+
+    font-family:Arial;
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+#console{
+
+    width:100%;
+
+    max-width:900px;
+
+    padding:10px;
+
+}
+
+#header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+}
+
+#screen{
+
+    width:100%;
+
+    border:4px solid #444;
+
+    background:black;
+
     image-rendering:pixelated;
+
+    border-radius:10px;
+
+}
+
+#controls{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:20px;
+
+}
+
+#dpad button,
+#actionButtons button{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    border:none;
+
+    font-size:24px;
+
+    margin:5px;
+
+}
+
+#actionButtons{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+}
+
+button{
+
+    touch-action:none;
+}
+
+#romInput{
+
+    margin-top:15px;
 }
