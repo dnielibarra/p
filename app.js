@@ -1,118 +1,119 @@
-// Referencias al DOM
+// Variables Globales e Instancia del Emulador Real
+let snesEmulator = null;
+let romCargada = false;
+let animationFrameId = null;
+
 const canvas = document.getElementById('snes-canvas');
 const ctx = canvas.getContext('2d');
-const btnFullscreen = document.getElementById('btn-fullscreen');
-const btnSave = document.getElementById('btn-save');
-const btnLoad = document.getElementById('btn-load');
-const romFile = document.getElementById('rom-file');
+const romFileInput = document.getElementById('rom-file');
 
-// Estado Virtual del Control SNES
-const controllerState = {
-    up: false, down: false, left: false, right: false,
-    A: false, B: false, X: false, Y: false,
-    L: false, R: false, select: false, start: false
+// Mapeo completo de IDs táctiles a los códigos de control internos de Snes9x
+// Valores estándar: Up=0, Down=1, Left=2, Right=3, Start=4, Select=5, A=6, B=7, X=8, Y=9, L=10, R=11
+const buttonMapping = {
+    'pad-up': 0, 'pad-down': 1, 'pad-left': 2, 'pad-right': 3,
+    'btn-start': 4, 'btn-select': 5,
+    'btn-A': 6, 'btn-B': 7, 'btn-X': 8, 'btn-Y': 9,
+    'btn-L': 10, 'btn-R': 11
 };
 
-// --- SOPORTE TOUCH MEJORADO ---
-// Mapeamos los IDs HTML con las propiedades del control
-const touchMapping = {
-    'pad-up': 'up', 'pad-down': 'down', 'pad-left': 'left', 'pad-right': 'right',
-    'btn-A': 'A', 'btn-B': 'B', 'btn-X': 'X', 'btn-Y': 'Y',
-    'btn-L': 'L', 'btn-R': 'R', 'btn-select': 'select', 'btn-start': 'start'
-};
+// --- CONFIGURACIÓN DE BOTONES TÁLCTILES MULTITOUCH ---
+Object.keys(buttonMapping).forEach(id => {
+    const boton = document.getElementById(id);
+    if (!boton) return;
 
-// Añadir listeners para pantallas táctiles de manera eficiente
-Object.keys(touchMapping).forEach(btnId => {
-    const button = document.getElementById(btnId);
-    if (!button) return;
+    const snesKeyCode = buttonMapping[id];
 
-    // Cuando el usuario presiona el botón virtual
-    button.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Evita zoom o comportamiento por defecto del móvil
-        const key = touchMapping[btnId];
-        controllerState[key] = true;
-        button.style.background = "rgba(255,255,255,0.7)";
-        console.log(`Presionado: ${key}`, controllerState);
+    // Evento al presionar
+    boton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (snesEmulator && romCargada) {
+            snesEmulator.pressButton(0, snesKeyCode); // Puerto de control 1, ID del botón
+        }
     }, { passive: false });
 
-    // Cuando el usuario levanta el dedo del botón virtual
-    button.addEventListener('touchend', (e) => {
+    // Evento al soltar
+    boton.addEventListener('touchend', (e) => {
         e.preventDefault();
-        const key = touchMapping[btnId];
-        controllerState[key] = false;
-        button.style.background = ""; // Restablece el CSS original
+        if (snesEmulator && romCargada) {
+            snesEmulator.releaseButton(0, snesKeyCode);
+        }
     }, { passive: false });
 });
 
-// --- FUNCIONALIDAD: FULLSCREEN (VERTICAL / HORIZONTAL) ---
-btnFullscreen.addEventListener('click', () => {
-    const container = document.getElementById('emulator-container');
+// --- INICIALIZACIÓN DEL MOTOR CUANDO SE CARGA EL ARCHIVO ---
+romFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Si ya había un juego corriendo, lo detenemos
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const arrayBuffer = event.target.result;
+        const romUint8 = new Uint8Array(arrayBuffer);
+
+        try {
+            // Inicializar la librería snes9x-js pasándole el Canvas
+            // Snes9xJS se autoinyecta globalmente si se cargó el script en el HTML
+            if (typeof Snes9xJS !== 'undefined') {
+                snesEmulator = new Snes9xJS(canvas);
+                snesEmulator.loadROM(romUint8);
+                romCargada = true;
+                
+                // Arrancar el ciclo de ejecución a 60 FPS
+                loopEmulador();
+            } else {
+                alert("Error: El motor Snes9x no se cargó correctamente desde internet.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo procesar la ROM de SNES: " + error.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+// --- BUCLE PRINCIPAL DE JUEGO (GAME LOOP) ---
+function loopEmulador() {
+    if (snesEmulator && romCargada) {
+        // Ejecuta un frame del juego y lo dibuja en el canvas automáticamente
+        snesEmulator.runFrame(); 
+        animationFrameId = requestAnimationFrame(loopEmulador);
+    }
+}
+
+// --- PANTALLA COMPLETA ---
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+    const contenedor = document.getElementById('emulator-container');
     if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(err => {
-            alert(`Error al activar pantalla completa: ${err.message}`);
+        contenedor.requestFullscreen().catch(err => {
+            console.log("Error Fullscreen:", err);
         });
     } else {
         document.exitFullscreen();
     }
 });
 
-// --- FUNCIONALIDAD: CARGAR ROM ---
-romFile.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const romBuffer = event.target.result;
-        // Aquí pasamos el 'romBuffer' al motor de SNES cargado en WebAssembly
-        console.log("ROM cargada exitosamente. Tamaño:", romBuffer.byteLength, "bytes");
-        inicializarMotorSNES(romBuffer);
-    };
-    reader.readAsArrayBuffer(file);
-});
-
-// --- FUNCIONALIDAD: GUARDAR Y CARGAR PARTIDA (Save States) ---
-btnSave.addEventListener('click', () => {
-    // En un emulador real, el motor exporta un Array de bytes (RAM/State)
-    // Simularemos un objeto de estado básico para esta estructura:
-    const emuStateMock = {
-        timestamp: Date.now(),
-        score: 9999, 
-        // Aquí iría: motor.exportSaveState()
-    };
+// --- SISTEMA DE GUARDADO / CARGA REAL (SRAM / STATE) ---
+document.getElementById('btn-save').addEventListener('click', () => {
+    if (!snesEmulator || !romCargada) return alert("Carga un juego primero");
     
-    localStorage.setItem('snes_save_state', JSON.stringify(emuStateMock));
-    alert('¡Partida guardada con éxito!');
+    // Obtenemos el snapshot de la memoria del emulador como String/Base64 o Binario
+    const saveState = snesEmulator.getSaveState(); 
+    localStorage.setItem('snes_slot_1', JSON.stringify(saveState));
+    alert("Partida guardada en la memoria local del navegador.");
 });
 
-btnLoad.addEventListener('click', () => {
-    const savedData = localStorage.getItem('snes_save_state');
-    if (!savedData) {
-        alert('No se encontró ninguna partida guardada.');
-        return;
-    }
+document.getElementById('btn-load').addEventListener('click', () => {
+    if (!snesEmulator || !romCargada) return alert("Carga un juego primero");
     
-    const emuState = JSON.parse(savedData);
-    console.log("Cargando datos...", emuState);
-    // Aquí iría: motor.importSaveState(emuState)
-    alert('Partida cargada.');
+    const savedData = localStorage.getItem('snes_slot_1');
+    if (!savedData) return alert("No hay datos guardados");
+
+    const saveState = JSON.parse(savedData);
+    snesEmulator.loadSaveState(saveState);
+    alert("Partida restaurada con éxito.");
 });
-
-// --- Loop del Emulador ficticio ---
-function inicializarMotorSNES(buffer) {
-    // Esta función dibuja un patrón de prueba en el canvas para verificar que funciona
-    function arrancarLoop() {
-        // Limpiar pantalla
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Dibujar un cuadrado verde que se mueve si dejas presionado "Derecha" o "Abajo"
-        ctx.fillStyle = "#00ff00";
-        let posX = controllerState.right ? 100 : 50;
-        let posY = controllerState.down ? 100 : 50;
-        ctx.fillRect(posX, posY, 40, 40);
-
-        requestAnimationFrame(arrancarLoop);
-    }
-    arrancarLoop();
-}
