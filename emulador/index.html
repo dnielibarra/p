@@ -1,18 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Mi SNES</title>
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>IBARRA 8-BIT</title>
+
+<link rel="stylesheet"
+href="style.css">
+
 </head>
+
 <body>
 
-<h1>Mi Emulador SNES</h1>
+<div id="console">
 
-<input type="file" id="romLoader" accept=".smc,.sfc">
+    <div id="header">
 
-<canvas id="screen" width="256" height="224"></canvas>
+        <h1>🎮 IBARRA 8-BIT</h1>
 
-<script src="emulator.js"></script>
+        <button id="fullscreenBtn">
+            ⛶
+        </button>
+
+    </div>
+
+    <canvas id="screen"
+            width="256"
+            height="224">
+    </canvas>
+
+    <input
+      type="file"
+      id="romInput"
+      accept=".smc,.sfc">
+
+</div>
+
+<div id="controls">
+
+    <div id="dpad">
+
+        <button id="up">▲</button>
+
+        <div>
+
+            <button id="left">◀</button>
+
+            <button id="down">▼</button>
+
+            <button id="right">▶</button>
+
+        </div>
+
+    </div>
+
+    <div id="actionButtons">
+
+        <button>A</button>
+        <button>B</button>
+        <button>X</button>
+        <button>Y</button>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
 
 </body>
 </html>
