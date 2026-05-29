@@ -1,87 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IBARRA 8-BIT</title>
-
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<!-- PRESENTACION -->
-
-<div id="splash">
-
-    <div id="logo">
-
-        <h1>IBARRA 8-BIT</h1>
-
-        <p>PRESENTA</p>
-
-    </div>
-
+<div id="intro">
+  <div class="intro-box">
+    <h1>IBARRA 8-BIT</h1>
+    <p id="introText">INITIALIZING...</p>
+  </div>
 </div>
 
-<!-- EMULADOR -->
+<button id="fullscreenBtn">⛶</button>
 
-<div id="console">
+<main id="app">
 
-    <div id="header">
+  <section id="screenFrame">
+    <div id="game"></div>
+  </section>
 
-        <button id="fullscreenBtn">
-            ⛶
-        </button>
+  <div id="romBar">
+    <label for="romInput" class="fileBtn">Seleccionar ROM</label>
+    <input type="file" id="romInput" accept=".smc,.sfc,.zip">
+    <span id="romName">Ninguna ROM cargada</span>
+  </div>
 
-    </div>
-
-    <canvas id="screen"
-            width="256"
-            height="224">
-    </canvas>
-
-    <input type="file"
-           id="romInput"
-           accept=".smc,.sfc">
-
-</div>
-
-<div id="gameArea">
+  <section id="controls">
 
     <div id="dpad">
-
-        <button id="up">▲</button>
-
-        <button id="left">◀</button>
-
-        <div id="center"></div>
-
-        <button id="right">▶</button>
-
-        <button id="down">▼</button>
-
+      <button data-key="ArrowUp">▲</button>
+      <button data-key="ArrowLeft">◀</button>
+      <div class="dcenter"></div>
+      <button data-key="ArrowRight">▶</button>
+      <button data-key="ArrowDown">▼</button>
     </div>
 
     <div id="actionButtons">
-
-        <button>X</button>
-        <button>A</button>
-
-        <button>Y</button>
-        <button>B</button>
-
+      <button data-key="KeyA">X</button>
+      <button data-key="KeyX">A</button>
+      <button data-key="KeyS">Y</button>
+      <button data-key="KeyZ">B</button>
     </div>
 
-</div>
+    <div id="startSelect">
+      <button data-key="ShiftRight">SELECT</button>
+      <button data-key="Enter">START</button>
+    </div>
+
+  </section>
+
+</main>
 
 <script src="app.js"></script>
-
 </body>
 </html>
