@@ -3,46 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SNES Web Emulator</title>
+    <title>SNES Emulator Pro</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/snes9x-js@1.60.0/dist/snes9x.js"></script>
 </head>
 <body>
 
     <div id="emulator-container">
         <div id="menu-bar">
-            <input type="file" id="rom-file" accept=".sfc,.smc">
-            <button id="btn-fullscreen">Pantalla Completa</button>
+            <label class="custom-file-upload">
+                <input type="file" id="rom-file" accept=".sfc,.smc">
+                Seleccionar ROM
+            </label>
+            <button id="btn-fullscreen">Fullscreen</button>
             <button id="btn-save">Guardar</button>
             <button id="btn-load">Cargar</button>
         </div>
 
-        <div id="screen-wrapper">
-            <canvas id="snes-canvas" width="256" height="224"></canvas>
+        <div id="game-layout">
             
-            <div id="touch-controls" class="touch-layer">
-                <div id="dpad">
-                    <button class="dpad-btn" id="pad-up">▲</button>
-                    <button class="dpad-btn" id="pad-left">◀</button>
-                    <button class="dpad-btn" id="pad-right">▶</button>
-                    <button class="dpad-btn" id="pad-down">▼</button>
-                </div>
-
-                <div id="action-buttons">
-                    <button class="action-btn" id="btn-X">X</button>
-                    <button class="action-btn" id="btn-Y">Y</button>
-                    <button class="action-btn" id="btn-A">A</button>
-                    <button class="action-btn" id="btn-B">B</button>
-                </div>
-
+            <div id="canvas-container">
+                <canvas id="snes-canvas" width="256" height="224"></canvas>
+            </div>
+            
+            <div id="touch-controls">
+                
                 <div id="trigger-buttons">
                     <button class="trigger-btn" id="btn-L">L</button>
                     <button class="trigger-btn" id="btn-R">R</button>
+                </div>
+
+                <div id="dpad-container">
+                    <div id="dpad">
+                        <button class="dpad-btn" id="pad-up">▲</button>
+                        <button class="dpad-btn" id="pad-left">◀</button>
+                        <button class="dpad-btn" id="pad-right">▶</button>
+                        <button class="dpad-btn" id="pad-down">▼</button>
+                    </div>
                 </div>
 
                 <div id="center-buttons">
                     <button class="meta-btn" id="btn-select">SELECT</button>
                     <button class="meta-btn" id="btn-start">START</button>
                 </div>
+
+                <div id="action-container">
+                    <div id="action-buttons">
+                        <button class="action-btn" id="btn-X">X</button>
+                        <button class="action-btn" id="btn-Y">Y</button>
+                        <button class="action-btn" id="btn-A">A</button>
+                        <button class="action-btn" id="btn-B">B</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
