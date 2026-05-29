@@ -1,28 +1,35 @@
-const romLoader = document.getElementById("romLoader");
+const canvas =
+document.getElementById("screen");
 
-romLoader.addEventListener("change", (e)=>{
+const ctx =
+canvas.getContext("2d");
 
-    const file = e.target.files[0];
+ctx.fillStyle = "black";
+ctx.fillRect(0,0,256,224);
 
-    const reader = new FileReader();
+ctx.fillStyle = "white";
+ctx.font = "16px Arial";
 
-    reader.onload = function(){
+ctx.fillText(
+"IBARRA 8-BIT",
+70,
+100
+);
 
-        const romData = new Uint8Array(reader.result);
+ctx.fillText(
+"Version 0.1",
+85,
+130
+);
 
-        console.log("ROM cargada");
-        console.log(romData.length);
+document
+.getElementById("fullscreenBtn")
+.addEventListener(
+"click",
+()=>{
 
-        iniciarEmulador(romData);
-
-    };
-
-    reader.readAsArrayBuffer(file);
+    document
+    .documentElement
+    .requestFullscreen();
 
 });
-
-function iniciarEmulador(rom){
-
-    console.log("Aquí iría el núcleo SNES");
-
-}
