@@ -40,8 +40,26 @@ html,body{
 }
 
 @keyframes pulse{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.07);}
+  0%,100%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.07);
+  }
+}
+
+#fullscreenBtn{
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:10000;
+  width:55px;
+  height:55px;
+  font-size:28px;
+  border:none;
+  border-radius:8px;
+  background:#eee;
+  color:#000;
 }
 
 #romMenu{
