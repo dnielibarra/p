@@ -11,7 +11,11 @@ html,body{
   color:white;
   font-family:Arial,sans-serif;
   overflow:hidden;
+  touch-action:none;
+  overscroll-behavior:none;
 }
+
+/* INTRO */
 
 #intro{
   position:fixed;
@@ -48,6 +52,8 @@ html,body{
   }
 }
 
+/* BOTON FULLSCREEN MOVIBLE */
+
 #fullscreenBtn{
   position:fixed;
   top:18px;
@@ -57,10 +63,15 @@ html,body{
   height:55px;
   font-size:28px;
   border:none;
-  border-radius:8px;
-  background:#eee;
+  border-radius:50%;
+  background:rgba(255,255,255,.45);
   color:#000;
+  backdrop-filter:blur(4px);
+  touch-action:none;
+  user-select:none;
 }
+
+/* MENU ROM */
 
 #romMenu{
   position:fixed;
@@ -100,6 +111,8 @@ html,body{
   text-overflow:ellipsis;
   white-space:nowrap;
 }
+
+/* EMULADOR */
 
 #emulatorBox{
   width:100vw;
