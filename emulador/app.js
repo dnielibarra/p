@@ -54,7 +54,7 @@ fullscreenBtn.addEventListener("click", () => {
   toggleFullscreen();
 });
 
-/* BOTON FULLSCREEN MOVIBLE CON DEDO */
+/* BOTON FULLSCREEN MOVIBLE */
 
 fullscreenBtn.addEventListener("touchstart", function(e){
   const touch = e.touches[0];
@@ -94,41 +94,6 @@ fullscreenBtn.addEventListener("touchend", function(e){
   }
 }, {passive:false});
 
-/* SOPORTE MOUSE PARA PC */
-
-fullscreenBtn.addEventListener("mousedown", function(e){
-  offsetX = e.clientX - fullscreenBtn.getBoundingClientRect().left;
-  offsetY = e.clientY - fullscreenBtn.getBoundingClientRect().top;
-
-  draggingFullscreen = false;
-
-  function move(ev){
-    let newLeft = ev.clientX - offsetX;
-    let newTop = ev.clientY - offsetY;
-
-    const maxLeft = window.innerWidth - fullscreenBtn.offsetWidth;
-    const maxTop = window.innerHeight - fullscreenBtn.offsetHeight;
-
-    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-    newTop = Math.max(0, Math.min(newTop, maxTop));
-
-    fullscreenBtn.style.left = newLeft + "px";
-    fullscreenBtn.style.top = newTop + "px";
-    fullscreenBtn.style.right = "auto";
-
-    draggingFullscreen = true;
-    fullscreenMoved = true;
-  }
-
-  function up(){
-    document.removeEventListener("mousemove", move);
-    document.removeEventListener("mouseup", up);
-  }
-
-  document.addEventListener("mousemove", move);
-  document.addEventListener("mouseup", up);
-});
-
 /* CARGAR ROM */
 
 romInput.addEventListener("change", function(e){
@@ -156,20 +121,14 @@ function startEmulator(gameUrl){
   window.EJS_core = "snes";
   window.EJS_gameUrl = gameUrl;
 
-  /*
-    Esta ruta apunta a la carpeta data/
-    Debe terminar con /
-  */
   window.EJS_pathtodata =
   "https://dnielibarra.github.io/p/emulador/emulatorjs/data/";
 
   window.EJS_startOnLoaded = true;
   window.EJS_language = "es";
 
-  /*
-    Ajustes para intentar reducir lag
-  */
-  window.EJS_volume = 0.4;
+  /* Ajustes para reducir lag */
+  window.EJS_volume = 0.35;
   window.EJS_threads = false;
   window.EJS_disableDatabases = true;
   window.EJS_gamePatchUrl = "";
@@ -184,9 +143,6 @@ function startEmulator(gameUrl){
   const script = document.createElement("script");
   script.id = "ejs-loader";
 
-  /*
-    Esta ruta apunta al archivo loader.js
-  */
   script.src =
   "https://dnielibarra.github.io/p/emulador/emulatorjs/data/loader.js";
 
