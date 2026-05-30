@@ -124,3 +124,66 @@ html,body{
   width:100%;
   height:100%;
 }
+
+/* =============================== */
+/* AJUSTES EMULATORJS CONTROLES */
+/* =============================== */
+
+/* Agranda un poco todos los controles táctiles */
+.ejs_virtualGamepad button,
+.ejs_virtualGamepad div,
+[class*="gamepad"] button,
+[class*="Gamepad"] button{
+  touch-action:none !important;
+}
+
+/* Separar visualmente los botones A/B/X/Y */
+.ejs_virtualGamepad,
+[class*="virtual"],
+[class*="Virtual"]{
+  --ibarra-gap: 22px;
+}
+
+/* Botones de acción un poco más grandes */
+.ejs_button,
+[class*="button"]{
+  font-size:1.15em !important;
+}
+
+/* Ocultar botones rápido/lento si aparecen */
+button[title*="Rápido"],
+button[title*="Lento"],
+button[aria-label*="Rápido"],
+button[aria-label*="Lento"],
+div[title*="Rápido"],
+div[title*="Lento"],
+div[aria-label*="Rápido"],
+div[aria-label*="Lento"]{
+  display:none !important;
+}
+
+/* En horizontal: separar más los botones */
+@media (orientation:landscape){
+
+  /* mueve el grupo de botones derechos un poquito más hacia afuera */
+  .ejs_virtualGamepad{
+    transform:scale(1.05) !important;
+  }
+
+  /* intenta separar botones internos de EmulatorJS */
+  .ejs_button{
+    margin:10px !important;
+  }
+}
+
+/* En vertical: botones más cómodos */
+@media (orientation:portrait){
+
+  .ejs_button{
+    margin:12px !important;
+  }
+
+  .ejs_virtualGamepad{
+    transform:scale(1.08) !important;
+  }
+}
